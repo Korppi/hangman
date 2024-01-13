@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	p := tea.NewProgram(model.MainModel{})
+	p := tea.NewProgram(model.NewHangmanGame())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Error: %v", err)
 		os.Exit(1)
