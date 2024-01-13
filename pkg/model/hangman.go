@@ -8,7 +8,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var Words = []string{"tractor", "computer", "environment", "science", "application"}
+const MIN_WORD_LENGTH = 7
+
+var Words = []string{}
 var HangmanGraphics = []string{
 	`
 	_________
