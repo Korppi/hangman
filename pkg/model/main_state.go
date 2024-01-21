@@ -5,11 +5,12 @@ import (
 )
 
 type MainState struct {
-	Text string
+	Text  string
+	state Substate
 }
 
 func NewMainState() *MainState {
-	return &MainState{Text: "Main :)"}
+	return &MainState{Text: "Main :)", state: &MenuState{Text: "Menu :O"}}
 }
 
 func (m MainState) Init() tea.Cmd {
@@ -17,16 +18,20 @@ func (m MainState) Init() tea.Cmd {
 }
 
 func (m MainState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.Type {
-		case tea.KeyCtrlC:
-			return m, tea.Quit
-		}
+	stateExitCode := m.state.Update(msg)
+	if stateExitCode == Quit {
+		return m, tea.Quit
+	} else if stateExitCode == Game {
+		m.state = &GameState{Text: "Game ^^"}
+	} else if stateExitCode == Menu {
+		m.state = &MenuState{Text: "Menu again :O"}
 	}
 	return m, nil
 }
 
 func (m MainState) View() string {
-	return m.Text
+	text := m.Text
+	text += "\n"
+	text += m.state.View()
+	return text
 }
