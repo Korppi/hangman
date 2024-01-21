@@ -15,7 +15,7 @@ func (m *GameState) Update(msg tea.Msg) StateExitCode {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:
-			return Quit // TODO: at this iteration, lets use just ints. Later on, lets change to enums and if it looks better, then lets change to use msg structs
+			return Quit
 		case tea.KeySpace:
 			return Menu
 		}
