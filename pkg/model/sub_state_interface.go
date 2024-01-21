@@ -11,11 +11,11 @@ type Substate interface {
 type StateExitCode int
 
 const (
-	Nothing    StateExitCode = 0
-	Quit       StateExitCode = 1
-	Menu       StateExitCode = 2
-	Game       StateExitCode = 3
-	Statistics StateExitCode = 4
-	Settings   StateExitCode = 5
-	About      StateExitCode = 6
+	Nothing StateExitCode = iota
+	Quit
+	Menu
+	Game
+	Statistics
+	Settings
+	About
 )
