@@ -14,7 +14,7 @@ func NewMainState() *MainState {
 }
 
 func (m MainState) Init() tea.Cmd {
-	return nil
+	return tea.SetWindowTitle("Hangman")
 }
 
 func (m MainState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
