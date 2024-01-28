@@ -12,6 +12,8 @@ type MainState struct {
 	Text  string
 	state Substate
 	count int
+	test  int
+	flag  bool
 }
 
 func NewMainState() *MainState {
@@ -19,6 +21,15 @@ func NewMainState() *MainState {
 }
 
 type TickMsg time.Time
+
+type FlagMsg int
+
+func ticking() tea.Cmd {
+	return func() tea.Msg {
+		time.Sleep(time.Millisecond * 250)
+		return FlagMsg(1)
+	}
+}
 
 // Send a message every second.
 func tickEvery() tea.Cmd {
@@ -36,6 +47,17 @@ func (m MainState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case TickMsg:
 		m.count++
 		return m, tickEvery()
+	case FlagMsg:
+		m.test--
+		if m.test <= 0 {
+			m.flag = false
+			return m, nil
+		}
+		return m, ticking()
+	case tea.KeyMsg:
+		m.test = 10
+		m.flag = true
+		return m, ticking()
 	}
 	stateExitCode := m.state.Update(msg)
 	if stateExitCode == Quit {
@@ -45,11 +67,12 @@ func (m MainState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	} else if stateExitCode == Menu {
 		m.state = &MenuState{Text: "Menu again :O"}
 	}
+
 	return m, nil
 }
 
 func (m MainState) View() string {
-	text := m.Text + fmt.Sprint(m.count)
+	text := m.Text + fmt.Sprint(m.count) + " " + fmt.Sprint(m.test) + " " + fmt.Sprint(m.flag)
 	text += "\n"
 	text += m.state.View()
 	style := lipgloss.NewStyle().
