@@ -15,7 +15,7 @@ func NewHighscoreModel() *HighscoreModel {
 }
 
 func (m HighscoreModel) Init() tea.Cmd {
-	return nil
+	return tea.SetWindowTitle("Hangman - Highscore")
 }
 
 func (m HighscoreModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -33,5 +33,6 @@ func (m HighscoreModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m HighscoreModel) View() string {
-	return m.text
+	text := m.text
+	return text
 }
