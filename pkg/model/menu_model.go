@@ -1,31 +1,33 @@
 package model
 
 import (
+	"github.com/Korppi/hangmancli/pkg/graphics"
 	"github.com/Korppi/hangmancli/pkg/styles"
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type keyMap struct {
+type menuKeyMap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Enter key.Binding
 	Quit  key.Binding
+	Help  key.Binding
 }
 
-func (k keyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Quit}
+func (k menuKeyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Help}
 }
 
-func (k keyMap) FullHelp() [][]key.Binding {
+func (k menuKeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.Up, k.Down, k.Enter}, // first column
-		{k.Quit},                // second column
+		{k.Help, k.Quit},        // second column
 	}
 }
 
-var keys = keyMap{
+var menuKeys = menuKeyMap{
 	Up: key.NewBinding(
 		key.WithKeys("up"),
 		key.WithHelp("↑", "move up"),
@@ -39,30 +41,35 @@ var keys = keyMap{
 		key.WithHelp("enter", "confirm selection"),
 	),
 	Quit: key.NewBinding(
-		key.WithKeys("q", "esc", "ctrl+c"),
-		key.WithHelp("q/esc/ctrl+c", "quit"),
+		key.WithKeys("q"),
+		key.WithHelp("q", "quit"),
+	),
+	Help: key.NewBinding(
+		key.WithKeys("h"),
+		key.WithHelp("h", "toggle help"),
 	),
 }
 
 type MenuModel struct {
 	selectionIndex int
 	selections     []string
-	keys           keyMap
+	keys           menuKeyMap
 	help           help.Model
 }
 
 func NewMenuModel() *MenuModel {
-	return NewMenuModelWithStartingIndex(0)
+	return NewMenuModelWithConfigurations(0, false)
 }
 
-func NewMenuModelWithStartingIndex(startingIndex int) *MenuModel {
+// TODO: replace this and other similar functions with function, that takes optional options struct as parameter...
+func NewMenuModelWithConfigurations(startingIndex int, helpEnabled bool) *MenuModel {
 	model := &MenuModel{
 		selectionIndex: startingIndex,
-		selections:     []string{"Start game", "Highscore", "Credits", "Quit"},
-		keys:           keys,
+		selections:     []string{"Start game", "Statistics", "Credits", "Quit"},
+		keys:           menuKeys,
 		help:           help.New(),
 	}
-	model.help.ShowAll = true
+	model.help.ShowAll = helpEnabled
 	return model
 }
 
@@ -80,12 +87,14 @@ func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.selectionIndex = (m.selectionIndex - 1 + len(m.selections)) % len(m.selections)
 		case key.Matches(msg, m.keys.Down):
 			m.selectionIndex = (m.selectionIndex + 1) % len(m.selections)
+		case key.Matches(msg, m.keys.Help):
+			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Enter):
 			switch m.selectionIndex {
 			case 0:
 				return m, nil
 			case 1:
-				return NewHighscoreModel(), nil
+				return NewStatisticsModel(m.help.ShowAll), nil
 			case 2:
 				return m, nil
 			case 3:
@@ -98,15 +107,7 @@ func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m MenuModel) View() string {
-	text := styles.StyleMenuTitle.Render(`
- __   __  _______  __    _  _______  __   __  _______  __    _ 
-|  | |  ||   _   ||  |  | ||       ||  |_|  ||   _   ||  |  | |
-|  |_|  ||  |_|  ||   |_| ||    ___||       ||  |_|  ||   |_| |
-|       ||       ||       ||   | __ |       ||       ||       |
-|       ||       ||  _    ||   ||  ||       ||       ||  _    |
-|   _   ||   _   || | |   ||   |_| || ||_|| ||   _   || | |   |
-|__| |__||__| |__||_|  |__||_______||_|   |_||__| |__||_|  |__|
-	`) // Title text created with this cool tool: https://patorjk.com/software/taag/
+	text := styles.StyleMenuTitle.Render(graphics.Title)
 	text += "\n"
 	for i, v := range m.selections {
 		if i == m.selectionIndex {
