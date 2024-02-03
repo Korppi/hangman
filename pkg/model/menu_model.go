@@ -92,7 +92,7 @@ func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Enter):
 			switch m.selectionIndex {
 			case 0:
-				return m, nil
+				return NewGameModel(m.help.ShowAll), nil
 			case 1:
 				return NewStatisticsModel(m.help.ShowAll), nil
 			case 2:
