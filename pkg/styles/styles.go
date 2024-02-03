@@ -10,4 +10,7 @@ var (
 	StyleGameUnusedLetter  = lipgloss.NewStyle().Background(lipgloss.Color("#d0c0bd")).Foreground(lipgloss.Color("#000000")).Width(3).Align(lipgloss.Center)
 	StyleGameWrongLetter   = lipgloss.NewStyle().Background(lipgloss.Color("#FF0000")).Foreground(lipgloss.Color("#000000")).Width(3).Align(lipgloss.Center)
 	StyleGameCorrectLetter = lipgloss.NewStyle().Background(lipgloss.Color("#006600")).Foreground(lipgloss.Color("#000000")).Width(3).Align(lipgloss.Center)
+	StyleGameGameOver      = lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
+	StyleGameGameWin       = lipgloss.NewStyle().Foreground(lipgloss.Color("#006600"))
+	StyleGameQuessLetter   = lipgloss.NewStyle().Background(lipgloss.Color("#f5efb5")).Foreground(lipgloss.Color("#000000")).Width(3).Align(lipgloss.Center)
 )

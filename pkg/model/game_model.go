@@ -110,6 +110,10 @@ func (m GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			runeString := strings.ToLower(string(msg.Runes))
 			if m.maxQuesses > m.WrongQuessCount && strings.Contains(m.Quess, "_") {
 				m.MakeGuess(runeString)
+			} else if msg.String() == "y" {
+				return NewGameModel(m.help.ShowAll), nil
+			} else if msg.String() == "n" {
+				return NewMenuModel(), nil
 			}
 		}
 
@@ -136,7 +140,19 @@ func (m GameModel) View() string {
 		keyboardGraphics += "\n" + strings.Repeat(" ", (i+1)*2) // dirty... but result looks good enough for me
 	}
 	text += lipgloss.JoinHorizontal(lipgloss.Center, hangmanGraphics, keyboardGraphics)
-	text += "\n" + m.Quess + "\n"
+	text += "\n"
+	for _, v := range m.Quess {
+		text += " " + styles.StyleGameQuessLetter.Render(string(v))
+	}
+	text += "\n"
+	if m.maxQuesses <= m.WrongQuessCount && strings.Contains(m.Quess, "_") {
+		text += styles.StyleGameGameOver.Render("You lost! ")
+		text += "Correct word was: " + m.Word + "\n"
+		text += "Want to play again? y/n"
+	} else if m.maxQuesses > m.WrongQuessCount && !strings.Contains(m.Quess, "_") {
+		text += styles.StyleGameGameWin.Render("You win! ")
+		text += "Want to play again? y/n"
+	}
 	text += "\n\n" + m.help.View(m.keys)
 	return text
 }
