@@ -140,7 +140,7 @@ func (m GameModel) View() string {
 		keyboardGraphics += "\n" + strings.Repeat(" ", (i+1)*2) // dirty... but result looks good enough for me
 	}
 	text += lipgloss.JoinHorizontal(lipgloss.Center, hangmanGraphics, keyboardGraphics)
-	text += "\n"
+	text += "\n    "
 	for _, v := range m.Quess {
 		text += " " + styles.StyleGameQuessLetter.Render(string(v))
 	}
@@ -148,10 +148,10 @@ func (m GameModel) View() string {
 	if m.maxQuesses <= m.WrongQuessCount && strings.Contains(m.Quess, "_") {
 		text += styles.StyleGameGameOver.Render("You lost! ")
 		text += "Correct word was: " + m.Word + "\n"
-		text += "Want to play again? y/n"
+		text += styles.StyleGameReplay.Render("Want to play again? y/n")
 	} else if m.maxQuesses > m.WrongQuessCount && !strings.Contains(m.Quess, "_") {
 		text += styles.StyleGameGameWin.Render("You win! ")
-		text += "Want to play again? y/n"
+		text += styles.StyleGameReplay.Render("Want to play again? y/n")
 	}
 	text += "\n\n" + m.help.View(m.keys)
 	return text
