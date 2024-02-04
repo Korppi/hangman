@@ -2,7 +2,7 @@ package graphics
 
 // Title text created with this cool tool: https://patorjk.com/software/taag/
 var Title = `
-__   __  _______  __    _  _______  __   __  _______  __    _ 
+ __   __  _______  __    _  _______  __   __  _______  __    _ 
 |  | |  ||   _   ||  |  | ||       ||  |_|  ||   _   ||  |  | |
 |  |_|  ||  |_|  ||   |_| ||    ___||       ||  |_|  ||   |_| |
 |       ||       ||       ||   | __ |       ||       ||       |
